@@ -147,13 +147,14 @@ def _probe_ref_time(
     level: str,
     reference_datetime: str = "latest",
     horizon: str = "P0DT0H",
+    variables: list[str] | None = None,
 ) -> str | None:
     """Fetch one variable to resolve the ref_time without pulling all data."""
     from meteodatalab import ogd_api
 
     req = ogd_api.Request(
         collection=COLLECTIONS[model],
-        variable=LEVEL_VARS[level][0],
+        variable=(variables or LEVEL_VARS[level])[0],
         reference_datetime=reference_datetime,
         perturbed=False,
         horizon=horizon,
@@ -174,13 +175,14 @@ def _fetch_snapshot(
     level: str,
     reference_datetime: str = "latest",
     horizon: str = "P0DT0H",
+    variables: list[str] | None = None,
 ):
     """Fetch all variables for one snapshot, return an xr.Dataset or None."""
     import xarray as xr
     from meteodatalab import ogd_api
 
     collection = COLLECTIONS[model]
-    variables = LEVEL_VARS[level]
+    variables = variables or LEVEL_VARS[level]
 
     arrays: dict[str, xr.DataArray] = {}
     for var in variables:
@@ -239,6 +241,7 @@ def _ingest(
     prefix: str | None = None,
     reference_datetime: str = "latest",
     horizon: str = "P0DT0H",
+    variables: list[str] | None = None,
 ) -> None:
     """Fetch one forecast snapshot and append to the icechunk store."""
     import icechunk
@@ -281,7 +284,11 @@ def _ingest(
         reference_datetime,
     )
     ref_time = _probe_ref_time(
-        model, level, reference_datetime=reference_datetime, horizon=horizon
+        model,
+        level,
+        reference_datetime=reference_datetime,
+        horizon=horizon,
+        variables=variables,
     )
     if ref_time is None:
         log.error("Could not resolve ref_time — aborting.")
@@ -300,7 +307,11 @@ def _ingest(
         "Fetching ICON-%s %s-level snapshot for %s", model.upper(), level, ref_time
     )
     ds = _fetch_snapshot(
-        model, level, reference_datetime=reference_datetime, horizon=horizon
+        model,
+        level,
+        reference_datetime=reference_datetime,
+        horizon=horizon,
+        variables=variables,
     )
 
     if ds is None:
@@ -399,9 +410,10 @@ def ingest_once(
     prefix: str | None = None,
     reference_datetime: str = "latest",
     horizon: str = "P0DT0H",
+    variables: list[str] | None = None,
 ):
     """One-shot ingestion, called from local_entrypoint or other Modal functions."""
-    _ingest(model, level, bucket, prefix, reference_datetime, horizon)
+    _ingest(model, level, bucket, prefix, reference_datetime, horizon, variables)
 
 
 @app.local_entrypoint()
@@ -412,10 +424,12 @@ def main(
     prefix: str = "",
     ref_datetime: str = "latest",
     horizon: str = "P0DT0H",
+    variables: str = "",
 ):
     """Manual trigger.
 
-    modal run -m meteoswiss_forecast_store.ingest_icon_ogd --model ch2 --level multi.
+    modal run -m meteoswiss_forecast_store.ingest_icon_ogd --model ch2 --level ml.
+    Pass --variables T,U,V to ingest only a subset of variables.
     """
     ingest_once.remote(
         model=model,
@@ -424,4 +438,5 @@ def main(
         prefix=prefix or None,
         reference_datetime=ref_datetime,
         horizon=horizon,
+        variables=variables.split(",") if variables else None,
     )
