@@ -1,6 +1,6 @@
-[![GitHub license](https://img.shields.io/github/license/martibosch/meteoswiss-forecast-store.svg)](https://github.com/martibosch/meteoswiss-forecast-store/blob/main/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/martibosch/meteoswiss-nwp-store.svg)](https://github.com/martibosch/meteoswiss-nwp-store/blob/main/LICENSE)
 
-# MeteoSwiss Forecast Store
+# MeteoSwiss NWP Store
 
 A framework for building cloud-optimised operational analysis archives from [ICON-CH](https://www.meteoswiss.admin.ch/weather/weather-and-climate-from-a-to-z/icon.html) forecasts, using [meteodatalab](https://github.com/MeteoSwiss/meteodata-lab) to fetch data from the [MeteoSwiss Open Data API](https://opendatadocs.dmi.govcloud.dk/en/DMIOpenData), [icechunk](https://icechunk.io) for versioned cloud storage, and [Modal](https://modal.com) for serverless scheduling.
 
@@ -67,7 +67,7 @@ pixi install
 pixi run modal setup
 ```
 
-Create a Modal secret named `meteoswiss-forecast-store-tigris` with your S3 credentials:
+Create a Modal secret named `meteoswiss-nwp-store-tigris` with your S3 credentials:
 
 ```
 AWS_ACCESS_KEY_ID=<access-key>

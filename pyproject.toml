@@ -3,9 +3,9 @@ requires = ["uv_build>=0.9.4,<0.10.0"]
 build-backend = "uv_build"
 
 [project]
-name = "meteoswiss-forecast-store"
+name = "meteoswiss-nwp-store"
 version = "0.1.0"
-description = "MeteoSwiss Forecast Store using Icechunk"
+description = "MeteoSwiss NWP Store using Icechunk"
 authors = [{name = "Martí Bosch", email = "marti.bosch@unibe.ch"}]
 readme = "README.md"
 license = {text = "GPL-3.0-only"}
@@ -21,7 +21,7 @@ classifiers = [
 requires-python = ">=3.10"
 
 [project.urls]
-repository = "https://github.com/martibosch/meteoswiss-forecast-store"
+repository = "https://github.com/martibosch/meteoswiss-nwp-store"
 
 [tool.codespell]
 ignore-regex = '^\s*"image\/png":\s.*'
@@ -33,19 +33,21 @@ pre-commit = ">=4.4.0,<5"
 python = "==3.13"
 just = ">=1.40.0,<2"
 modal-client = ">=1.3.4,<2"
-arraylake = ">=0.31.0,<0.32"
 boto3 = ">=1.42.73,<2"
 xarray = ">=2026.2.0,<2027"
 matplotlib = ">=3.10.8,<4"
 cartopy = ">=0.25.0,<0.26"
+tqdm = ">=4.67.3,<5"
+netcdf4 = ">=1.7.4,<2"
+arraylake = ">=0.31.0,<0.32"
 
 [tool.pixi.pypi-dependencies]
-meteoswiss_forecast_store = {path = ".", editable = true}
+meteoswiss_nwp_store = {path = ".", editable = true}
 
 [tool.pixi.workspace]
 authors = ["Martí Bosch marti.bosch@unibe.ch>"]
 channels = ["conda-forge", "bioconda"]
-name = "meteoswiss-forecast-store"
+name = "meteoswiss-nwp-store"
 platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 version = "0.1.0"
 
@@ -59,11 +61,11 @@ docstring-code-format = true
 select = ["D", "E", "F", "I"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["meteoswiss_forecast_store"]
+known-first-party = ["meteoswiss_nwp_store"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
 [tool.uv.build-backend]
-module-name = "meteoswiss_forecast_store"
+module-name = "meteoswiss_nwp_store"
 module-root = ""

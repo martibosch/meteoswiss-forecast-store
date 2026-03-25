@@ -11,12 +11,12 @@ Deployed as a Modal cron app with two scheduled functions:
   - ICON-CH2-EPS multi-level: every 6h
 
 Manual usage:
-    modal run -m meteoswiss_forecast_store.ingest_icon_ogd \
+    modal run -m meteoswiss_nwp_store.ingest_icon_ogd \
         --model ch2 --level multi \
         --bucket my-bucket --prefix icon-ch2-ml
 
 Deploy cron jobs:
-    modal deploy -m meteoswiss_forecast_store.ingest_icon_ogd
+    modal deploy -m meteoswiss_nwp_store.ingest_icon_ogd
 """
 
 import logging
@@ -32,7 +32,7 @@ APP_NAME = "icon-ogd-ingest"
 
 app = modal.App(APP_NAME)
 
-aws_credentials_secret = modal.Secret.from_name("meteoswiss-forecast-store-tigris")
+aws_credentials_secret = modal.Secret.from_name("meteoswiss-nwp-store-tigris")
 
 image = (
     modal.Image.micromamba(python_version="3.12")
@@ -130,7 +130,7 @@ LEVEL_VARS = {
 
 # default store config - override via env vars in the Modal secret.
 
-DEFAULT_BUCKET = "meteoswiss-forecast-store"
+DEFAULT_BUCKET = "meteoswiss-nwp-store"
 STORE_PREFIXES = {
     ("ch1", "ml"): "icon-ch1-anl-ml",
     ("ch2", "ml"): "icon-ch2-anl-ml",
@@ -428,7 +428,7 @@ def main(
 ):
     """Manual trigger.
 
-    modal run -m meteoswiss_forecast_store.ingest_icon_ogd --model ch2 --level ml.
+    modal run -m meteoswiss_nwp_store.ingest_icon_ogd --model ch2 --level ml.
     Pass --variables T,U,V to ingest only a subset of variables.
     """
     ingest_once.remote(
